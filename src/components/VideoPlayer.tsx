@@ -81,6 +81,32 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
     };
   }, [item.Id, shouldLoad, directPlayFailed]);
 
+  // Report playback progress
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+
+    if (isPlaying) {
+      interval = setInterval(() => {
+        if (videoRef.current) {
+          const currentTime = videoRef.current.currentTime;
+          const mediaSourceId = item.MediaSources?.[0]?.Id || item.Id;
+          const ticks = Math.floor(currentTime * 10000000);
+          jellyfinApi.reportPlaybackProgress(item.Id, mediaSourceId, ticks, false);
+        }
+      }, 1000);
+    } else if (videoRef.current && videoRef.current.currentTime > 0) {
+      // Report paused state
+      const currentTime = videoRef.current.currentTime;
+      const mediaSourceId = item.MediaSources?.[0]?.Id || item.Id;
+      const ticks = Math.floor(currentTime * 10000000);
+      jellyfinApi.reportPlaybackProgress(item.Id, mediaSourceId, ticks, true);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPlaying, item.Id]);
+
   useEffect(() => {
     if (isActive) {
       videoRef.current?.play().catch(() => {

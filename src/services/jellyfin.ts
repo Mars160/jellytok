@@ -128,4 +128,21 @@ export const jellyfinApi = {
     });
     return `${baseUrl}/Videos/${itemId}/master.m3u8?${params.toString()}`;
   },
+
+  reportPlaybackProgress: async (itemId: string, mediaSourceId: string, ticks: number, isPaused: boolean) => {
+    const baseUrl = getBaseUrl();
+    const state = useStore.getState();
+    
+    await axios.post(
+      `${baseUrl}/Sessions/Playing/Progress`,
+      {
+        ItemId: itemId,
+        MediaSourceId: mediaSourceId,
+        PositionTicks: ticks,
+        IsPaused: isPaused,
+        EventName: 'TimeUpdate'
+      },
+      { headers: { ...getAuthHeader() } }
+    );
+  },
 };
