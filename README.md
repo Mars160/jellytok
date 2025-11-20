@@ -1,73 +1,85 @@
-# jellytok
-A TikTok like App Powered By Jellyfin. Implemented by Gemini 3 Pro.
+# JellyTok
 
-## Tech Stack
+A modern, lightweight web-based media player for Jellyfin that mimics the immersive experience of TikTok. Swipe vertically to browse your media library with ease.
 
-This project is built with:
-- **Vite** - Next Generation Frontend Tooling
-- **React** - A JavaScript library for building user interfaces
-- **TypeScript** - JavaScript with syntax for types
-- **pnpm** - Fast, disk space efficient package manager
+## ✨ Features
 
-## Getting Started
+- **TikTok-Style Interface**: Vertical swipe gestures to switch between videos.
+- **Seamless Playback**:
+  - **HLS Support**: Adaptive streaming with transcoding support.
+  - **Direct Play**: Option to play files directly without transcoding for supported formats.
+  - **Smart Loading**: Optimized buffering strategy to reduce server load.
+- **Customizable Experience**:
+  - **Quality Control**: Adjust video bitrate or let it auto-adapt.
+  - **Filters**: Filter by played status, favorites, or sort by date/random.
+  - **Playback Modes**: Toggle "Direct Play First" with automatic fallback to transcoding.
+- **Interactive**: Double-tap to like/unlike videos.
+- **Responsive**: Designed for mobile and desktop web.
+
+## 🛠️ Tech Stack
+
+- **Framework**: React 19 + Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **State Management**: Zustand (with persistence)
+- **Video Player**: Native HTML5 Video + hls.js
+- **Gestures/Carousel**: Swiper.js
+- **Icons**: Lucide React
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 20+ 
+
+- Node.js 20+
 - pnpm (install via `npm install -g pnpm`)
+- A running Jellyfin server
 
 ### Installation
 
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Mars160/jellytok.git.git
+   cd jellytok
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pnpm install
+   ```
+
+3. Start the development server:
+
+   ```bash
+   pnpm dev
+   ```
+
+4. Open your browser at `http://localhost:5173`.
+
+### Configuration
+
+1. On first launch, you will be redirected to the **Settings** page.
+2. Enter your **Jellyfin Server URL** (e.g., `http://192.168.1.10:8096`).
+3. Log in with your Jellyfin username and password.
+4. Select the **Library** you want to browse (e.g., Music Videos, Movies).
+5. Configure filters and quality settings as desired.
+6. Click **Start Watching**!
+
+## 📦 Build
+
+To build the application for production:
+
 ```bash
-# Install dependencies
-pnpm install
-```
-
-### Development
-
-```bash
-# Start the development server
-pnpm dev
-```
-
-This will start the Vite dev server at `http://localhost:5173/`
-
-### Build
-
-```bash
-# Build for production
 pnpm build
 ```
 
-The built files will be in the `dist` directory.
+The output files will be in the `dist` directory, ready to be deployed to any static file server (Nginx, Apache, Vercel, Netlify, etc.).
 
-### Preview Production Build
+## 🤝 Contributing
 
-```bash
-# Preview the production build locally
-pnpm preview
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Linting
+## 📄 License
 
-```bash
-# Run ESLint
-pnpm lint
-```
-
-## Project Structure
-
-```
-jellytok/
-├── public/          # Static assets
-├── src/            # Source files
-│   ├── assets/     # Images, fonts, etc.
-│   ├── App.tsx     # Main App component
-│   ├── App.css     # App styles
-│   ├── main.tsx    # Application entry point
-│   └── index.css   # Global styles
-├── index.html      # HTML entry point
-├── package.json    # Project dependencies and scripts
-├── tsconfig.json   # TypeScript configuration
-├── vite.config.ts  # Vite configuration
-└── eslint.config.js # ESLint configuration
-```
+This project is open source.
