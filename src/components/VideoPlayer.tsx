@@ -18,7 +18,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
   const [progress, setProgress] = useState(0);
   const [isLiked, setIsLiked] = useState(item.UserData?.IsFavorite || false);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
-  const user = useStore((state) => state.user);
+  const [directPlayFailed, setDirectPlayFailed] = useState(false);
+  const { user, directPlayFirst } = useStore();
+
+  // Reset failure state when item changes
+  useEffect(() => {
+    setDirectPlayFailed(false);
+  }, [item.Id]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -28,23 +34,41 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
     const hlsUrl = jellyfinApi.getHlsUrl(item.Id, mediaSourceId);
     let hls: Hls | null = null;
 
-    if (Hls.isSupported()) {
-      hls = new Hls({
-        //maxBufferLength: 30,
-        //maxMaxBufferLength: 60,
-        enableWorker: true,
-        xhrSetup: (xhr) => {
-          if (user?.AccessToken) {
-            xhr.setRequestHeader('X-Emby-Token', user.AccessToken);
-          }
-        },
-      });
-      hls.loadSource(hlsUrl);
-      hls.attachMedia(video);
-    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-      video.src = hlsUrl;
+    const loadHls = () => {
+      if (Hls.isSupported()) {
+        hls = new Hls({
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          enableWorker: true,
+          xhrSetup: (xhr) => {
+            if (user?.AccessToken) {
+              xhr.setRequestHeader('X-Emby-Token', user.AccessToken);
+            }
+          },
+        });
+        hls.loadSource(hlsUrl);
+        hls.attachMedia(video);
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = hlsUrl;
+      }
+    };
+
+    const loadDirect = () => {
+      const container = item.MediaSources?.[0]?.Container;
+      video.src = jellyfinApi.getStreamUrl(item.Id, container);
+      
+      const handleError = () => {
+        console.warn('Direct play failed, falling back to transcoding...');
+        setDirectPlayFailed(true);
+        video.removeEventListener('error', handleError);
+      };
+      video.addEventListener('error', handleError);
+    };
+
+    if (directPlayFirst && !directPlayFailed) {
+      loadDirect();
     } else {
-      video.src = jellyfinApi.getStreamUrl(item.Id);
+      loadHls();
     }
 
     return () => {
@@ -55,7 +79,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
       video.removeAttribute('src');
       video.load();
     };
-  }, [item.Id, shouldLoad]);
+  }, [item.Id, shouldLoad, directPlayFailed]);
 
   useEffect(() => {
     if (isActive) {
@@ -104,7 +128,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
     setTimeout(() => setShowHeartAnim(false), 1000);
     
     try {
-      await jellyfinApi.toggleFavorite(user.Id, item.Id, newStatus);
+      await jellyfinApi.toggleFavorite(user.Id, item.Id, !newStatus);
     } catch (err) {
       console.error('Failed to toggle favorite', err);
       setIsLiked(!newStatus); // Revert on error
