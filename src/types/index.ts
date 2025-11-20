@@ -41,6 +41,7 @@ export interface AppSettings {
   serverUrl: string;
   user?: User;
   selectedLibraryId?: string;
+  bitrate: number;
   filters: {
     playStatus: 'All' | 'Unplayed' | 'Played';
     favoriteStatus: 'All' | 'Favorites' | 'NonFavorites';

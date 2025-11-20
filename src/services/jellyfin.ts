@@ -109,7 +109,10 @@ export const jellyfinApi = {
 
   getHlsUrl: (itemId: string, mediaSourceId?: string) => {
     const baseUrl = getBaseUrl();
-    const token = useStore.getState().user?.AccessToken;
+    const state = useStore.getState();
+    const token = state.user?.AccessToken;
+    const bitrate = state.bitrate || 100000000;
+
     const params = new URLSearchParams({
       MediaSourceId: mediaSourceId || itemId,
       PlaySessionId: Date.now().toString(),
@@ -120,6 +123,7 @@ export const jellyfinApi = {
       SegmentContainer: 'ts',
       AllowVideoStreamCopy: 'true',
       AllowAudioStreamCopy: 'true',
+      VideoBitrate: bitrate.toString(),
     });
     return `${baseUrl}/Videos/${itemId}/master.m3u8?${params.toString()}`;
   },

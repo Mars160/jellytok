@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { jellyfinApi } from '../services/jellyfin';
 import type { Library } from '../types';
-import { Settings as SettingsIcon, LogOut, Save, Server, User as UserIcon, Library as LibraryIcon, Filter } from 'lucide-react';
+import { Settings as SettingsIcon, LogOut, Save, Server, User as UserIcon, Library as LibraryIcon, Filter, Gauge } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const navigate = useNavigate();
@@ -12,10 +12,12 @@ export const Settings: React.FC = () => {
     user,
     selectedLibraryId,
     filters,
+    bitrate,
     setServerUrl,
     setUser,
     setSelectedLibraryId,
     setFilter,
+    setBitrate,
     reset,
   } = useStore();
 
@@ -155,6 +157,30 @@ export const Settings: React.FC = () => {
       {user && (
         <section className="space-y-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
+            <Gauge size={20} /> Quality (Bitrate)
+          </h2>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { label: 'Auto / Max', value: 100000000 },
+              { label: '1080p (10 Mbps)', value: 10000000 },
+              { label: '720p (4 Mbps)', value: 4000000 },
+              { label: '480p (1.5 Mbps)', value: 1500000 },
+            ].map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setBitrate(opt.value)}
+                className={`p-3 rounded-lg border text-sm ${
+                  (bitrate || 100000000) === opt.value
+                    ? 'bg-blue-600 border-blue-500'
+                    : 'bg-gray-900 border-gray-700'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          <h2 className="text-xl font-semibold flex items-center gap-2 mt-6">
             <Filter size={20} /> Filters
           </h2>
           

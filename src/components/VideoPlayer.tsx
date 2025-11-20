@@ -30,6 +30,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
 
     if (Hls.isSupported()) {
       hls = new Hls({
+        //maxBufferLength: 30,
+        //maxMaxBufferLength: 60,
+        enableWorker: true,
         xhrSetup: (xhr) => {
           if (user?.AccessToken) {
             xhr.setRequestHeader('X-Emby-Token', user.AccessToken);
