@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Heart, Play, Pause, Settings } from 'lucide-react';
+import Hls from 'hls.js';
 import type { MediaItem } from '../types';
 import { jellyfinApi } from '../services/jellyfin';
 import { useStore } from '../store/useStore';
@@ -17,6 +18,37 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, onTogg
   const [isLiked, setIsLiked] = useState(item.UserData?.IsFavorite || false);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
   const user = useStore((state) => state.user);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const mediaSourceId = item.MediaSources?.[0]?.Id;
+    const hlsUrl = jellyfinApi.getHlsUrl(item.Id, mediaSourceId);
+    let hls: Hls | null = null;
+
+    if (Hls.isSupported()) {
+      hls = new Hls({
+        xhrSetup: (xhr) => {
+          if (user?.AccessToken) {
+            xhr.setRequestHeader('X-Emby-Token', user.AccessToken);
+          }
+        },
+      });
+      hls.loadSource(hlsUrl);
+      hls.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = hlsUrl;
+    } else {
+      video.src = jellyfinApi.getStreamUrl(item.Id);
+    }
+
+    return () => {
+      if (hls) {
+        hls.destroy();
+      }
+    };
+  }, [item.Id]);
 
   useEffect(() => {
     if (isActive) {
@@ -95,7 +127,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, onTogg
       {/* Video */}
       <video
         ref={videoRef}
-        src={jellyfinApi.getStreamUrl(item.Id)}
         className="absolute inset-0 w-full h-full object-contain z-10"
         loop
         playsInline

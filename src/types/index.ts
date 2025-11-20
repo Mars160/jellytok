@@ -24,6 +24,12 @@ export interface MediaItem {
   ImageTags?: {
     Primary?: string;
   };
+  MediaSources?: {
+    Id: string;
+    Container: string;
+    SupportsDirectStream: boolean;
+    SupportsTranscoding: boolean;
+  }[];
   UserData?: {
     IsFavorite: boolean;
     Played: boolean;
