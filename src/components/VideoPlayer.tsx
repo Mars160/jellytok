@@ -8,10 +8,11 @@ import { useStore } from '../store/useStore';
 interface VideoPlayerProps {
   item: MediaItem;
   isActive: boolean;
+  shouldLoad: boolean;
   onToggleSettings: () => void;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, onToggleSettings }) => {
+export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, shouldLoad, onToggleSettings }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -21,7 +22,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, onTogg
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || !shouldLoad) return;
 
     const mediaSourceId = item.MediaSources?.[0]?.Id;
     const hlsUrl = jellyfinApi.getHlsUrl(item.Id, mediaSourceId);
@@ -47,8 +48,11 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, onTogg
       if (hls) {
         hls.destroy();
       }
+      // Clear video source to stop buffering
+      video.removeAttribute('src');
+      video.load();
     };
-  }, [item.Id]);
+  }, [item.Id, shouldLoad]);
 
   useEffect(() => {
     if (isActive) {

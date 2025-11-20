@@ -71,6 +71,7 @@ export const Home: React.FC = () => {
             <VideoPlayer 
               item={item} 
               isActive={index === activeIndex} 
+              shouldLoad={Math.abs(index - activeIndex) <= 1}
               onToggleSettings={() => navigate('/settings')}
             />
           </SwiperSlide>
