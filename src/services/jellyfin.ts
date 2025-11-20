@@ -24,7 +24,11 @@ export const jellyfinApi = {
       { Username: username, Pw: pw },
       { headers: { ...getClientHeaders() } }
     );
-    return response.data;
+    return {
+      Id: response.data.User.Id,
+      Name: response.data.User.Name,
+      AccessToken: response.data.AccessToken,
+    };
   },
 
   getViews: async (userId: string): Promise<Library[]> => {
