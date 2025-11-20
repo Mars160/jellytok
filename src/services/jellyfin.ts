@@ -101,10 +101,11 @@ export const jellyfinApi = {
     return `${baseUrl}/Items/${itemId}/Images/Primary?tag=${tag}&quality=90`;
   },
 
-  getStreamUrl: (itemId: string) => {
+  getStreamUrl: (itemId: string, container?: string) => {
     const baseUrl = getBaseUrl();
     const token = useStore.getState().user?.AccessToken;
-    return `${baseUrl}/Videos/${itemId}/stream?static=true&api_key=${token}`;
+    const ext = container ? `.${container}` : '';
+    return `${baseUrl}/Videos/${itemId}/stream${ext}?static=true&api_key=${token}`;
   },
 
   getHlsUrl: (itemId: string, mediaSourceId?: string) => {

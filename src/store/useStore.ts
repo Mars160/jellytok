@@ -7,6 +7,7 @@ interface AppState extends AppSettings {
   setUser: (user: User) => void;
   setSelectedLibraryId: (id: string) => void;
   setBitrate: (bitrate: number) => void;
+  setDirectPlayFirst: (enabled: boolean) => void;
   setFilter: (key: keyof AppSettings['filters'], value: string) => void;
   reset: () => void;
 }
@@ -16,6 +17,7 @@ const initialState: AppSettings = {
   user: undefined,
   selectedLibraryId: undefined,
   bitrate: 100000000, // Default 100 Mbps
+  directPlayFirst: false,
   filters: {
     playStatus: 'All',
     favoriteStatus: 'All',
@@ -31,6 +33,7 @@ export const useStore = create<AppState>()(
       setUser: (user) => set({ user }),
       setSelectedLibraryId: (id) => set({ selectedLibraryId: id }),
       setBitrate: (bitrate) => set({ bitrate }),
+      setDirectPlayFirst: (enabled) => set({ directPlayFirst: enabled }),
       setFilter: (key, value) =>
         set((state) => ({
           filters: { ...state.filters, [key]: value },

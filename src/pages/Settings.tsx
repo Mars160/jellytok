@@ -13,11 +13,13 @@ export const Settings: React.FC = () => {
     selectedLibraryId,
     filters,
     bitrate,
+    directPlayFirst,
     setServerUrl,
     setUser,
     setSelectedLibraryId,
     setFilter,
     setBitrate,
+    setDirectPlayFirst,
     reset,
   } = useStore();
 
@@ -178,6 +180,22 @@ export const Settings: React.FC = () => {
                 {opt.label}
               </button>
             ))}
+          </div>
+
+          <div className="flex items-center justify-between bg-gray-900 p-3 rounded-lg border border-gray-700 mt-2">
+            <span className="text-sm">Direct Play First (Fallback to Transcode)</span>
+            <button
+              onClick={() => setDirectPlayFirst(!directPlayFirst)}
+              className={`w-12 h-6 rounded-full transition-colors relative ${
+                directPlayFirst ? 'bg-blue-600' : 'bg-gray-600'
+              }`}
+            >
+              <div
+                className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                  directPlayFirst ? 'translate-x-6' : ''
+                }`}
+              />
+            </button>
           </div>
 
           <h2 className="text-xl font-semibold flex items-center gap-2 mt-6">
