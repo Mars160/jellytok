@@ -14,6 +14,7 @@ A modern, lightweight web-based media player for Jellyfin that mimics the immers
   - **Filters**: Filter by played status, favorites, or sort by date/random.
   - **Playback Modes**: Toggle "Direct Play First" with automatic fallback to transcoding.
 - **Interactive**: Double-tap to like/unlike videos.
+- **PWA Support**: Installable as a native-like app on mobile and desktop.
 - **Responsive**: Designed for mobile and desktop web.
 
 ## 🛠️ Tech Stack
