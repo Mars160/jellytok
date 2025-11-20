@@ -103,13 +103,24 @@ export const jellyfinApi = {
 
   getStreamUrl: (itemId: string) => {
     const baseUrl = getBaseUrl();
-    // Using static=true for direct play as per requirements, but HLS is recommended.
-    // For simplicity in this MVP, we'll try direct stream first or HLS if needed.
-    // Let's stick to the requirement's "Direct Play" example for now, or HLS.
-    // HLS is better for compatibility.
-    // {BASE_URL}/Videos/{ItemId}/master.m3u8?MediaSourceId={...}&PlaySessionId={...}
-    // For now, let's use a simple video stream endpoint which Jellyfin often redirects or handles.
-    // Or the "stream" endpoint.
-    return `${baseUrl}/Videos/${itemId}/stream?static=true`;
+    const token = useStore.getState().user?.AccessToken;
+    return `${baseUrl}/Videos/${itemId}/stream?static=true&api_key=${token}`;
+  },
+
+  getHlsUrl: (itemId: string, mediaSourceId?: string) => {
+    const baseUrl = getBaseUrl();
+    const token = useStore.getState().user?.AccessToken;
+    const params = new URLSearchParams({
+      MediaSourceId: mediaSourceId || itemId,
+      PlaySessionId: Date.now().toString(),
+      api_key: token || '',
+      VideoCodec: 'h264',
+      AudioCodec: 'aac',
+      TranscodingContainer: 'ts',
+      SegmentContainer: 'ts',
+      AllowVideoStreamCopy: 'true',
+      AllowAudioStreamCopy: 'true',
+    });
+    return `${baseUrl}/Videos/${itemId}/master.m3u8?${params.toString()}`;
   },
 };
