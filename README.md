@@ -6,6 +6,10 @@ A modern, lightweight web-based media player for Jellyfin that mimics the immers
 
 **Language:** [English](README.md) | [中文](README-zh.md)
 
+## 🌐 Live Demo
+
+Try the live demo: [https://jellytok.pages.dev](https://jellytok.pages.dev)
+
 ## ✨ Features
 
 - **TikTok-Style Interface**: Vertical swipe gestures to switch between videos.
