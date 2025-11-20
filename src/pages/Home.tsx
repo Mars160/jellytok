@@ -57,6 +57,20 @@ export const Home: React.FC = () => {
     return <div className="h-screen w-screen bg-black flex items-center justify-center text-white">Loading...</div>;
   }
 
+  if (!items.length && !loading) {
+    return (
+      <div className="h-screen w-screen bg-black flex flex-col items-center justify-center text-white gap-4">
+        <p className="text-xl text-gray-400">No videos found</p>
+        <button 
+          onClick={() => navigate('/settings')}
+          className="px-6 py-3 bg-gray-800 rounded-full font-semibold hover:bg-gray-700 transition-colors"
+        >
+          Open Settings
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen w-screen bg-black">
       <Swiper
