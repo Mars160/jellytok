@@ -17,6 +17,43 @@ export const Home: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
+    let lastBackTime = 0;
+    
+    const handlePopState = () => {
+      const now = Date.now();
+      // 如果距离上次返回操作小于2秒，则允许返回（不做拦截）
+      if (now - lastBackTime < 2000) {
+        return;
+      }
+      
+      // 第一次返回，进行拦截
+      lastBackTime = now;
+      
+      // 显示提示
+      const toast = document.createElement('div');
+      toast.textContent = '再按一次退出';
+      toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-black/70 text-white px-6 py-2 rounded-full text-sm z-50 backdrop-blur-md transition-opacity duration-300 pointer-events-none';
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+      
+      // 重新推入当前状态，抵消浏览器的后退操作
+      window.history.pushState(null, '', window.location.pathname);
+    };
+
+    // 组件挂载时，推入一个状态作为缓冲
+    window.history.pushState(null, '', window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!user || !selectedLibraryId) {
       navigate('/settings');
       return;
