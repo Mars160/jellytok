@@ -73,7 +73,7 @@ export const Settings: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-6 flex flex-col gap-6 max-w-md mx-auto">
+    <div className="h-screen overflow-y-auto bg-black text-white p-6 flex flex-col gap-6 max-w-md mx-auto">
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <SettingsIcon /> Settings
