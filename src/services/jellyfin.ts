@@ -131,7 +131,7 @@ export const jellyfinApi = {
 
   reportPlaybackProgress: async (itemId: string, mediaSourceId: string, ticks: number, isPaused: boolean) => {
     const baseUrl = getBaseUrl();
-    const state = useStore.getState();
+    //const state = useStore.getState();
     
     await axios.post(
       `${baseUrl}/Sessions/Playing/Progress`,
