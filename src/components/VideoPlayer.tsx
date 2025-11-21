@@ -232,7 +232,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
               type="range"
               min="0"
               max="100"
-              value={progress}
+              value={progress ? progress : 0}
               onChange={handleSeek}
               className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-white"
             />
