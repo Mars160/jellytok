@@ -240,6 +240,13 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
         </div>
       </div>
 
+      {/* Play Overlay */}
+      {!isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <Play size={80} className="fill-white/40 text-white/40" />
+        </div>
+      )}
+
       {/* Like Animation */}
       {showHeartAnim && (
         <div className="absolute inset-0 flex items-center justify-center z-40 pointer-events-none animate-bounce">
