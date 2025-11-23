@@ -28,11 +28,30 @@ export const Settings: React.FC = () => {
   const [libraries, setLibraries] = useState<Library[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [commitHash, setCommitHash] = useState('');
 
   useEffect(() => {
     if (user && serverUrl) {
       loadLibraries();
     }
+    // Try to get commit hash from env (Vite) or from public/commit.txt
+    const viteHash = import.meta.env.VITE_COMMIT_HASH;
+    if (viteHash) {
+      setCommitHash(viteHash);
+      return;
+    }
+
+    const fetchHash = async () => {
+      try {
+        const res = await fetch('/commit.txt');
+        if (!res.ok) return;
+        const text = (await res.text()).trim();
+        setCommitHash(text);
+      } catch (err) {
+        // ignore
+      }
+    };
+    fetchHash();
   }, [user, serverUrl]);
 
   const handleLogin = async () => {
@@ -265,6 +284,11 @@ export const Settings: React.FC = () => {
           <Save /> Start Watching
         </button>
       )}
+
+      {/* Version / Commit Hash */}
+      <div className="text-center text-xs text-gray-400 mt-4 pb-6">
+        Version: {commitHash ? commitHash.slice(0, 7) : 'unknown'}
+      </div>
     </div>
   );
 };
