@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['vite.svg'],
+      includeAssets: ['icon.png'],
       manifest: {
         name: 'JellyTok',
         short_name: 'JellyTok',
