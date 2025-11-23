@@ -19,6 +19,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
   const [isLiked, setIsLiked] = useState(item.UserData?.IsFavorite || false);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
   const [directPlayFailed, setDirectPlayFailed] = useState(false);
+  const [isSeeking, setIsSeeking] = useState(false);
   const { user, directPlayFirst } = useStore();
 
   // Reset failure state when item changes
@@ -132,6 +133,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
   };
 
   const handleTimeUpdate = () => {
+    if (isSeeking) return;
     if (videoRef.current) {
       const duration = item.RunTimeTicks ? item.RunTimeTicks / 10000000 : videoRef.current.duration;
       const percent = (videoRef.current.currentTime / duration) * 100;
@@ -139,13 +141,19 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
     }
   };
 
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsSeeking(true);
+    setProgress(parseFloat(e.target.value));
+  };
+
+  const handleSeekEnd = (e: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
     if (videoRef.current) {
       const duration = item.RunTimeTicks ? item.RunTimeTicks / 10000000 : videoRef.current.duration;
-      const time = (parseFloat(e.target.value) / 100) * duration;
+      const val = parseFloat((e.currentTarget as HTMLInputElement).value);
+      const time = (val / 100) * duration;
       videoRef.current.currentTime = time;
-      setProgress(parseFloat(e.target.value));
     }
+    setIsSeeking(false);
   };
 
   const toggleLike = async () => {
@@ -235,7 +243,9 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
               min="0"
               max="100"
               value={progress ? progress : 0}
-              onChange={handleSeek}
+              onChange={handleSeekChange}
+              onMouseUp={handleSeekEnd}
+              onTouchEnd={handleSeekEnd}
               className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-white"
             />
           </div>
