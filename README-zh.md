@@ -1,6 +1,6 @@
 # JellyTok
 
-![JellyTok Icon](icon.png)
+![JellyTok Icon](public/icon.png)
 
 一个基于 Web 的 Jellyfin 媒体播放器，模仿 TikTok 的沉浸式体验。通过垂直滑动轻松浏览您的媒体库。
 

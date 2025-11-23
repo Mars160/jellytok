@@ -1,6 +1,6 @@
 # JellyTok
 
-![JellyTok Icon](icon.png)
+![JellyTok Icon](public/icon.png)
 
 A modern, lightweight web-based media player for Jellyfin that mimics the immersive experience of TikTok. Swipe vertically to browse your media library with ease.
 
