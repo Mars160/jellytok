@@ -125,6 +125,7 @@ export const jellyfinApi = {
       EnableAutoStreamCopy: 'true', // 关键：启用自动流复制
       AllowVideoStreamCopy: 'true', // 关键：允许直接复制视频流
       AllowAudioStreamCopy: 'true', // 关键：允许直接复制音频流
+      static: 'true'
     });
     //return `${baseUrl}/Videos/${itemId}/master.m3u8?`;
     return `${baseUrl}/Videos/${itemId}/stream${ext}?${params.toString()}`;
