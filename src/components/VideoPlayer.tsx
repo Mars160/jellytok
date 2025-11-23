@@ -133,14 +133,16 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ item, isActive, should
 
   const handleTimeUpdate = () => {
     if (videoRef.current) {
-      const percent = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      const duration = item.RunTimeTicks ? item.RunTimeTicks / 10000000 : videoRef.current.duration;
+      const percent = (videoRef.current.currentTime / duration) * 100;
       setProgress(percent);
     }
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (videoRef.current) {
-      const time = (parseFloat(e.target.value) / 100) * videoRef.current.duration;
+      const duration = item.RunTimeTicks ? item.RunTimeTicks / 10000000 : videoRef.current.duration;
+      const time = (parseFloat(e.target.value) / 100) * duration;
       videoRef.current.currentTime = time;
       setProgress(parseFloat(e.target.value));
     }
