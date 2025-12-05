@@ -37,6 +37,14 @@ export interface MediaItem {
   };
 }
 
+export type ItemFilter = 
+  | 'IsUnplayed' 
+  | 'IsPlayed' 
+  | 'IsFavorite' 
+  | 'IsResumable' 
+  | 'Likes' 
+  | 'Dislikes';
+
 export interface AppSettings {
   serverUrl: string;
   user?: User;
@@ -44,8 +52,7 @@ export interface AppSettings {
   bitrate: number;
   directPlayFirst: boolean;
   filters: {
-    playStatus: 'All' | 'Unplayed' | 'Played';
-    favoriteStatus: 'All' | 'Favorites' | 'NonFavorites';
+    selected: ItemFilter[];
     sorting: 'Shuffle' | 'DateDesc' | 'DateAsc';
   };
 }

@@ -17,7 +17,8 @@ export const Settings: React.FC = () => {
     setServerUrl,
     setUser,
     setSelectedLibraryId,
-    setFilter,
+    toggleFilter,
+    setSorting,
     setBitrate,
     setDirectPlayFirst,
     reset,
@@ -221,38 +222,27 @@ export const Settings: React.FC = () => {
             <Filter size={20} /> Filters
           </h2>
           
-          <div className="space-y-2">
-            <label className="text-sm text-gray-400">Play Status</label>
-            <div className="flex bg-gray-900 rounded-lg p-1">
-              {['All', 'Unplayed', 'Played'].map((opt) => (
-                <button
-                  key={opt}
-                  onClick={() => setFilter('playStatus', opt)}
-                  className={`flex-1 py-2 rounded-md text-sm ${
-                    filters.playStatus === opt ? 'bg-gray-700' : ''
-                  }`}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm text-gray-400">Favorites</label>
-            <div className="flex bg-gray-900 rounded-lg p-1">
-              {['All', 'Favorites', 'NonFavorites'].map((opt) => (
-                <button
-                  key={opt}
-                  onClick={() => setFilter('favoriteStatus', opt)}
-                  className={`flex-1 py-2 rounded-md text-sm ${
-                    filters.favoriteStatus === opt ? 'bg-gray-700' : ''
-                  }`}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              'IsUnplayed',
+              'IsPlayed',
+              'IsFavorite',
+              'IsResumable',
+              'Likes',
+              'Dislikes',
+            ].map((opt) => (
+              <button
+                key={opt}
+                onClick={() => toggleFilter(opt as any)}
+                className={`py-2 px-3 rounded-md text-sm text-left ${
+                  (filters.selected || []).includes(opt as any)
+                    ? 'bg-gray-600 text-white'
+                    : 'bg-gray-800 text-gray-300'
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
           </div>
 
           <div className="space-y-2">
@@ -261,7 +251,7 @@ export const Settings: React.FC = () => {
               {['Shuffle', 'DateDesc', 'DateAsc'].map((opt) => (
                 <button
                   key={opt}
-                  onClick={() => setFilter('sorting', opt)}
+                  onClick={() => setSorting(opt as any)}
                   className={`flex-1 py-2 rounded-md text-sm ${
                     filters.sorting === opt ? 'bg-gray-700' : ''
                   }`}

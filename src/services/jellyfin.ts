@@ -43,8 +43,7 @@ export const jellyfinApi = {
     userId: string,
     parentId: string,
     filters: {
-      playStatus: string;
-      favoriteStatus: string;
+      selected: string[];
       sorting: string;
     },
     startIndex = 0,
@@ -62,10 +61,9 @@ export const jellyfinApi = {
     };
 
     // Apply Filters
-    if (filters.playStatus === 'Unplayed') params.IsPlayed = false;
-    if (filters.playStatus === 'Played') params.IsPlayed = true;
-    if (filters.favoriteStatus === 'Favorites') params.IsFavorite = true;
-    if (filters.favoriteStatus === 'NonFavorites') params.IsFavorite = false;
+    if (filters.selected && filters.selected.length > 0) {
+      params.Filters = filters.selected.join(',');
+    }
 
     // Apply Sorting
     if (filters.sorting === 'Shuffle') {

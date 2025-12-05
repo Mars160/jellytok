@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AppSettings, User } from '../types';
+import type { AppSettings, User, ItemFilter } from '../types';
 
 interface AppState extends AppSettings {
   setServerUrl: (url: string) => void;
@@ -8,7 +8,8 @@ interface AppState extends AppSettings {
   setSelectedLibraryId: (id: string) => void;
   setBitrate: (bitrate: number) => void;
   setDirectPlayFirst: (enabled: boolean) => void;
-  setFilter: (key: keyof AppSettings['filters'], value: string) => void;
+  toggleFilter: (filter: ItemFilter) => void;
+  setSorting: (sorting: AppSettings['filters']['sorting']) => void;
   reset: () => void;
 }
 
@@ -19,8 +20,7 @@ const initialState: AppSettings = {
   bitrate: 100000000, // Default 100 Mbps
   directPlayFirst: false,
   filters: {
-    playStatus: 'All',
-    favoriteStatus: 'All',
+    selected: [],
     sorting: 'Shuffle',
   },
 };
@@ -34,14 +34,35 @@ export const useStore = create<AppState>()(
       setSelectedLibraryId: (id) => set({ selectedLibraryId: id }),
       setBitrate: (bitrate) => set({ bitrate }),
       setDirectPlayFirst: (enabled) => set({ directPlayFirst: enabled }),
-      setFilter: (key, value) =>
+      toggleFilter: (filter) =>
+        set((state) => {
+          const currentSelected = state.filters.selected || [];
+          const selected = currentSelected.includes(filter)
+            ? currentSelected.filter((f) => f !== filter)
+            : [...currentSelected, filter];
+          return { filters: { ...state.filters, selected } };
+        }),
+      setSorting: (sorting) =>
         set((state) => ({
-          filters: { ...state.filters, [key]: value },
+          filters: { ...state.filters, sorting },
         })),
       reset: () => set(initialState),
     }),
     {
       name: 'jellytok-storage',
+      version: 1,
+      migrate: (persistedState: any, version) => {
+        if (version === 0) {
+          return {
+            ...persistedState,
+            filters: {
+              selected: [],
+              sorting: persistedState.filters?.sorting || 'Shuffle',
+            },
+          };
+        }
+        return persistedState as AppState;
+      },
     }
   )
 );
